@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <div id="root">
+            <style> 
+            
+            </style>
+        </div>
+        
+        <script src="../js/react.development.js"></script>
+        <script src="../js/react-dom.development.js"></script>
+        <script src="../js/babel.js"></script>
+
+        <script type="text/babel">
+            const rootHandle = document.getElementById('root')
+
+            const { useState } = React 
+
+            // Title / heading component
+            const TitleComponent = (props) => {
+                let date = new Date()
+                const [month, day, year] = [date.getMonth(), date.getDate(), date.getFullYear()]
+                let today = `${day}/${month + 1}/${year}`
+                // console.log(today)
+
+                return ( 
+                    <div>
+                        <h1 style={{ float : "left"}}> Raja Provision Store </h1>               
+                        <p style={{ float : "right" }}> <b> {today} </b></p> <br /><br /><br /><br />
+                        <hr />
+                    </div>
+                )
+            }
+
+            // Search bar component
+            const SearchElement = (props) => {
+                const { data, search, handleSearchChange } = props
+
+            
+            return (
+                <div>
+                    <input type="text" value={search} placeholder="Search item by name/code" style={{width : "99%", height : "25px"}} onChange={handleSearchChange} />
+                </div>
+                )
+            }
+
+            const ListItems = (props) => {
+                const { data, filterItem, cartItem, cartList} = props
+                
+                
+
+                return (
+                    filterItem.length > 0 ?
+                        <div>
+                            <hr />
+                            <h4 style={{color : 'gray'}}> List of products </h4>
+                            <hr />
+                            <table>
+                                <thead>
+                                    <tr>
+                                            <th style={{textAlign: 'center', padding:'0 100px 0 100px'}} > Name </th>
+                                            <th style={{textAlign: 'center', padding:'0 100px 0 100px'}} > Price </th>
+                                            <th style={{textAlign: 'center', padding:'0 20px 0 20px'}}> action </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filterItem.map((ele,i) => {
+                                        return <tr key={ele.id}> 
+                                            <td style={{textAlign: 'center', padding:'0 100px 0 100px'}}  > {ele.name} </td>
+                                            <td style={{textAlign: 'center', padding:'0 100px 0 100px'}} > { ele.price } </td>
+                                            <td style={{textAlign: 'center', padding:'0 20px 0 20px'}}> 
+                                                <button style={{textAlign: 'center', padding:'0 20px 0 20px' ,background : 'mediumblue', color : 'white' }} onClick={()=>{cartItem(ele, ele.id)}} > add </button> </td>
+                                        </tr>
+                                     })}
+                                </tbody>
+                            </table> 
+                    </div> : []
+        
+                )
+            }
+
+            const CartItemComponent = (props) => {
+                const {cartList, data, setCartList, handleRemoveItem, handleIncrement,handleDecrement } = props
+                // let Quantity = 1
+
+                
+
+                // const styling = {{ textAlign: 'center', padding:'0 15px 0 15px' }} 
+
+                // console.log(cartList.length)
+
+                return (
+                    cartList.length > '0' ? 
+                    <div>
+                    <hr />
+                        <h4 style={{color : 'gray'}}> List of Cart Items </h4>
+                        <hr style={{height:'2px' ,width:'100%', size:'10px', color:'black', background:'black' }} />
+                    <div>
+                        <table >
+                            
+                            <thead>
+                                <tr>
+                                    <th style={{textAlign: 'center', padding:'0 80px 0 80px'}}> # </th>
+                                    <th style={{textAlign: 'center', padding:'0 80px 0 80px'}}> Name </th>
+                                    <th style={{textAlign: 'center', padding:'0 80px 0 80px'}} > Price </th>
+                                    <th style={{textAlign: 'center', padding:'0 80px 0 80px'}} > Quantity </th>
+                                    <th style={{textAlign: 'center', padding:'0 80px 0 80px'}}> Total </th>
+                                    <th style={{textAlign: 'center', padding:'0 20px 0 20'}}> actions </th>       
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {cartList.map((ele,i) => {
+                                        return (
+                                            <tr key={ele.id}> 
+                                                <td style={{textAlign: 'center', padding:'0 80px 0 80px'}}> { i + 1} </td>
+                                                <td style={{textAlign: 'center', padding:'0 80px 0 80px'}}> {ele.name} </td>
+                                                <td style={{textAlign: 'center', padding:'0 80px 0 80px'}}> { ele.price } </td>
+                                                <td style={{textAlign: 'center', padding:'0 80px 0 80px'}}>
+                                                    <button onClick={() => {handleDecrement(ele.id)}} disabled={ele.Quantity < 2} style={{background : 'gray', color : 'white', borderRadius : '5px', textAlign: 'center', padding:'0 15px 0 15px'}}>-</button>
+                                                        { ele.Quantity } 
+                                                    <button onClick={() => {handleIncrement(ele.id)}} 
+                                                        style={{background : 'gray', color : 'white', borderRadius : '5px', textAlign: 'center', padding:'0 15px 0 15px'}}>+</button></td>
+                                                <td style={{textAlign: 'center', padding:'0 80px 0 80px'}} > {ele.price * ele.Quantity} </td>
+                                                <td>
+                                                    <button 
+                                                        onClick={() => {handleRemoveItem(ele.id)}}
+                                                        style={{background : 'red', color : 'white', borderRadius : '5px', align:'center' }}>
+                                                        Remove
+                                                    </button>
+                                                    </td>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
+                            </table>
+                            <hr style={{height:'2px' ,width:'100%', size:'10px', color:'black', background:'black' }} />
+                                        
+                    </div> 
+                </div>: []
+                )
+            }
+
+            const TotalComponent = (props) => {
+                // console.log(props)
+                const { cartList, setCartList, setFilterItem, setSearch } = props
+                // console.log(cartList)
+
+                let result = cartList.map(ele => {
+                    return ele.price * ele.Quantity
+                })
+                // console.log(result)
+                // var a = [1,2,3];
+                let sum = result.reduce(function(a, b) { return a + b }, 0)
+                // console.log(sum)
+
+                const handleNewBill = () => {
+                    confirm('are you sure ? do want to add new bill ')
+                    setCartList([])
+                    setFilterItem([])
+                    setSearch('')
+                }
+
+                return (
+                    <div>
+                        <h1 style={{float : 'right'}}>  Total - {sum} </h1>
+                        <button style={{background : 'GoldenRod', color : 'black', borderRadius : '5px'}} onClick={window.print}> Print Bill </button>
+                        <button style={{background : 'DarkGreen', color : 'white', borderRadius : '5px'}} onClick={() => handleNewBill(setCartList)}> Add new bill </button>
+                    </div>
+                )
+            }
+
+            // Parent component
+            const StoreContainer = (props) => {
+                const [data, setData] = useState([
+                    { id: "101", name: "Rice - Raw Sona Masuri",  price: 54, Quantity : 1 },
+                    { id: "104", name: "Rice - Raw Sona Masuri - super premium",  price: 58, Quantity : 1 },
+                    { id: "105", name: "Poha thick",  price: 48, Quantity : 1},
+                    { id: "110", name: "Poha Medium",  price: 55, Quantity : 1 },
+                    { id: "111", name: "Organic Sona Masuri Rice",  price: 69, Quantity : 1 }
+                ])
+
+                const [search, setSearch] = useState('')
+                const [filterItem, setFilterItem] = useState([])
+                const [cartList, setCartList] = useState([])
+                
+                const handleSearchChange = (event) => {
+                    let searchItem = event.target.value
+                    // console.log(searchItem)
+                
+                    const result = data.filter(ele => {
+                        return (ele.name.toLowerCase().includes(searchItem.toLowerCase()) || ele.id.includes(Number(searchItem)))
+                    })
+                    setSearch(searchItem)
+                    if(searchItem.length > 0) {
+                        setFilterItem(result)
+                    } else {
+                        setFilterItem([])
+                    }
+                }
+
+
+
+                const cartItem = (ele, id) => {  
+                    const result = cartList.filter((ele)=>{
+                        return ele.id===id
+                        })
+                        // console.log(result)
+                        if(result.length > 0) {
+                                alert('item already in Cart. Increasing quantity')
+                                handleIncrement(id)
+                                setSearch('')
+                            }else{
+                                const newArr = filterItem.filter((ele)=>{
+                                    return ele.id==id
+                                    setSearch('')
+                                })
+                                setCartList(cartList.concat(newArr))
+                            }
+                            setFilterItem([])
+                            setSearch('')
+                }
+
+                const handleIncrement = (id) => {
+                    // console.log(id)
+                    let result = cartList.filter(ele => {
+                        if(ele.id == id){
+                            return {...ele, Quantity : ele.Quantity = ele.Quantity + 1}
+                        } else {
+                            return {...ele, Quantity : ele.Quantity}
+                        }
+                    })
+                    setCartList(result)
+                }
+
+                const handleDecrement = (id) => {
+                    let result = cartList.filter(ele => {
+                        if(ele.id == id){
+                            return {...ele, Quantity : ele.Quantity = ele.Quantity - 1}
+                        } else {
+                            return {...ele, Quantity : ele.Quantity}
+                        }
+                    })
+                    setCartList(result)
+                }
+
+                const handleRemoveItem = (id) => {
+                    let result = cartList.filter(ele => {
+                            return  ele.id !== id
+                    })
+                    let confirmInput = confirm('are you sure ?')
+                    if(confirmInput){
+                        setCartList(result)
+                    }
+                }
+
+
+                return (
+                    <div>
+                        <TitleComponent />
+                        <SearchElement data={data} search={search} handleSearchChange={handleSearchChange} />
+                        <ListItems data={data} filterItem={filterItem} cartItem={cartItem} cartList={cartList}  />
+                        <CartItemComponent data={data} cartList={cartList} setCartList={setCartList} handleDecrement={handleDecrement} handleIncrement={handleIncrement} handleRemoveItem={handleRemoveItem} />
+                        {cartList.length != 0 && <TotalComponent cartList={cartList} setCartList={setCartList} setFilterItem={setFilterItem} setSearch={setSearch} /> }
+
+                        
+                    </div>
+                )
+            }
+
+
+            const App = (props) => {
+                
+                return (
+                    <div>
+                        <StoreContainer />
+                    </div>
+                )
+            }
+
+            ReactDOM.render(<App />, rootHandle)
+
+
+        </script>
+    </body>
+</html>
